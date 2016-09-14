@@ -1,0 +1,42 @@
+Step #1: Install phpMyAdmin
+
+First, we’ll follow best practices and ensure that the list of available packages is up to date:
+
+$ dnf -y update
+
+Then it’s a matter of running one command for installation:
+
+$ dnf -y install phpmyadmin
+
+Step #2: Find Your IP Address
+
+You can determine your public IP address by visiting http://ip.liquidweb.com.
+Step #3: Basic Configuration for phpMyAdmin
+
+By default, the configuration for phpMyAdmin allows access only from the server on which it is installed. To be able to access phpMyAdmin’s web interface from your IP address, we’ll edit the Apache Virtual Host file created automatically during installation.
+
+$ vim /etc/httpd/conf.d/phpMyAdmin.conf
+
+For a refresher on editing files with vim, see New User Tutorial: Overview of the Vim Text Editor. If vim is not installed on your OS, you can follow our tutorial on installing vim at How to Install VIM (Visual editor IMproved) on Fedora 23.
+
+In phpMyAdmin.conf, locate the following sections and change each IP address to the one you found in Step 2 (there should be a total of four instances of “127.0.0.1” which you’ll need to change to your IP address):
+
+Require ip 127.0.0.1
+Allow from 127.0.0.1
+Require ip 127.0.0.1
+Allow from 127.0.0.1
+
+Then save and exit the file with the following command:
+
+$ :wq
+
+Now, restart Apache:
+
+$ systemctl restart httpd
+
+Verify that phpMyAdmin is working by visiting http://the_IP_of_your_server/phpmyadmin. For example: http://111.222.333.444/phpmyadmin.
+Learn More
+
+To create a database user, visit Create a MySQL User on Linux via Command Line.
+To grant permissions to a database user, visit Grant Permission to a MySQL User on Linux via Command Line.
+ 
