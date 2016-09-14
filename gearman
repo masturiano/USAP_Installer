@@ -1,0 +1,37 @@
+Gearman is used to distribute appropriate computer tasks to multiple computers, so large tasks can be done more quickly.
+
+Gearman can be simply installed by the command
+
+$ yum install gearmand
+
+And in servers which are Debain/Ubuntu, installed using the command
+
+apt-get install gearman-job-server
+
+Once the job server has been installed, it can be started by running:
+
+$ gearmand -d
+
+It can also be installed from source file
+
+First download any latest tarball from Download [Gearman Job Server]
+
+$ tar xzf gearmand-X.Y.tar.gz
+
+$ cd gearmand-X.Y
+
+$ ./configure
+
+$ make
+
+$ make install [1]
+
+Footnotes
+
+[1] http://www.ideaminetech.com
+115 Views
+Abhilash Mhaisne
+Abhilash Mhaisne, Free and Open source software enthusiast, Metalhead, Liverpool fc fan
+Written 20 Sep 2014
+Thanks for A2A. Run yum install gearmand (older packages might be called gearmand-server)
+Source : Getting Started [Gearman Job Server]
