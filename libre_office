@@ -1,1 +1,2 @@
 Libre Calc: su -c yum group install libreoffice or sudo yum group install libreoffice
+sudo dnf install libreoffice

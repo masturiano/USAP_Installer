@@ -1,0 +1,98 @@
+Installing Supervisor1 and Superlance2 on CentOS/RHEL/Fedora can be a little tricky, as the versions of those packages included in the main repositories are too old to be useful. In this tutorial, I will show you how to make a stock install of the latest versions on CentOS, and will omit the configuration of Supervisor itself as that will be specific to your applications.
+Installing Supervisor
+
+As the super user, firstly install the Python setup tools to gain EasyInstall3, then use that to install Supervisor:
+
+$ yum install python-setuptools
+$ easy_install supervisor
+
+You should now have the latest version installed:
+
+$ supervisord --version
+3.1.0
+
+Create a config file
+
+Easy Install will not create a config file for Supervisor for you, but luckily Supervisor includes a utility called echo_supervisord_conf to generate a default configi file for you:
+
+$ echo_supervisord_conf > /etc/supervisord.conf
+
+You can now make changes directly to the new /etc/supervisord.conf file.
+Running the service
+
+While it is possible to start Supervisor using the supervisord command, I like to run services via an init script. Here is an example I use (placed in /etc/rc.d/init.d/supervisord):
+
+#!/bin/bash
+ 
+. /etc/init.d/functions
+ 
+DAEMON=/usr/bin/supervisord
+PIDFILE=/var/run/supervisord.pid
+ 
+[ -x "$DAEMON" ] || exit 0
+ 
+start() {
+        echo -n "Starting supervisord: "
+        if [ -f $PIDFILE ]; then
+                PID=`cat $PIDFILE`
+                echo supervisord already running: $PID
+                exit 2;
+        else
+                daemon  $DAEMON --pidfile=$PIDFILE -c /etc/supervisord.conf
+                RETVAL=$?
+                echo
+                [ $RETVAL -eq 0 ] && touch /var/lock/subsys/supervisord
+                return $RETVAL
+        fi
+ 
+}
+ 
+stop() {
+        echo -n "Shutting down supervisord: "
+        echo
+        killproc -p $PIDFILE supervisord
+        echo
+        rm -f /var/lock/subsys/supervisord
+        return 0
+}
+ 
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status supervisord
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    *)
+        echo "Usage:  {start|stop|status|restart}"
+        exit 1
+        ;;
+esac
+exit $?
+
+You will need to create that file, containing the above script, and make sure it's executable:
+
+$ nano /etc/rc.d/init.d/supervisord
+$ chmod 755 /etc/rc.d/init.d/supervisord
+
+You will now have access to the following commands to control Supervisor:
+
+$ service supervisord start
+$ service supervisord stop
+$ service supervisord status
+$ service supervisord restart
+
+$ supervisorctl reload
+
+Superlance
+
+Superlance is a set of additional plugins for Supervisor, that includes plugins for sending email or SMS alerts when a Supervisor process exists unexpectedly, for monitoring memory usage of Supervisor processes, and a few other useful monitoring and alerting utilities. You can also install it via EasyInstall:
+
+$ easy_install superlance
